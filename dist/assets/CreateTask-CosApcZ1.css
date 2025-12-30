@@ -1,0 +1,1 @@
+.create-task-form{display:flex;flex-direction:column;gap:.75rem}.create-task-form label{font-size:.9rem;font-weight:600}.create-task-form input,.create-task-form textarea,.create-task-form select{font:inherit}.form-error{margin-bottom:.75rem;font-size:.9rem;color:#f87171}
