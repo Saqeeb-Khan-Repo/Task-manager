@@ -1,6 +1,6 @@
 import Header from "./components/header/Header";
 import SideBar from "./components/sideBar/SideBar";
-import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import { Route, Routes, HashRouter as Router } from "react-router-dom";
 import Home from "./components/pages/Home";
 import { lazy, Suspense } from "react";
 import { Loading } from "./Loading";
@@ -22,7 +22,7 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/task" element={<Task />} />
               <Route path="/createtask" element={<CreateTask />} />
-              <Route path="/CompletedTask" element={<CompletedTask />} />
+              <Route path="/completed-task" element={<CompletedTask />} />
               <Route path="/login" element={<Login />} />
               <Route path="/SignUp" element={<SignUp />} />
             </Routes>
