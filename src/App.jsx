@@ -5,6 +5,7 @@ import Home from "./components/pages/Home";
 import { lazy, Suspense } from "react";
 import { Loading } from "./Loading";
 
+
 const App = () => {
   const Login = lazy(() => import("./components/pages/Login"));
   const SignUp = lazy(() => import("./components/pages/SignUp"));
