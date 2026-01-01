@@ -1,51 +1,80 @@
 // CompletedTask.jsx
-import "./main-Task/Task.css"; // reusing same styles
-// import { useTasks } from "../store/Context";
-import { useState, useEffect } from "react";
+import "./main-Task/Task.css";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
+
+const API_URL = "https://task-backend-sgnw.onrender.com/tasks/completed";
 
 const CompletedTask = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [completedTasks, setCompletedTasks] = useState([]);
+  const [error, setError] = useState("");
 
-  // Fetch ALL tasks and filter completed ones locally
+  // =============================
+  // FETCH COMPLETED TASKS
+  // =============================
   useEffect(() => {
-    const fetchTasks = async () => {
+    let isMounted = true;
+
+    const fetchCompletedTasks = async () => {
       try {
-        const response = await axios.get(
-          "https://task-backend-sgnw.onrender.com/tasks/completed"
-        );
-        // Filter only completed tasks
-        const completedOnly = response.data.filter(
-          (task) => task.isCompleted === true
-        );
-        setCompletedTasks(completedOnly);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch completed tasks:", error);
-        setLoading(false);
+        setLoading(true);
+        const { data } = await axios.get(`${API_URL}/tasks/completed`);
+
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid response format");
+        }
+
+        // extra safety filter
+        const completedOnly = data.filter((task) => task?.isCompleted === true);
+
+        if (isMounted) {
+          setCompletedTasks(completedOnly);
+        }
+      } catch (err) {
+        console.error("Failed to fetch completed tasks:", err);
+        if (isMounted) {
+          setError("Failed to load completed tasks.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchTasks();
+    fetchCompletedTasks();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // Filter completed tasks based on search and priority
-  const filteredTasks = completedTasks.filter((task) => {
-    const matchesSearch =
-      task.taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.taskDescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      false;
+  // =============================
+  // FILTER TASKS (MEMOIZED)
+  // =============================
+  const filteredTasks = useMemo(() => {
+    return completedTasks.filter((task) => {
+      const title = task?.taskName?.toLowerCase() || "";
+      const description = task?.taskDescription?.toLowerCase() || "";
 
-    const matchesPriority =
-      priorityFilter === "all" ||
-      task.priority.toLowerCase() === priorityFilter.toLowerCase();
+      const matchesSearch =
+        title.includes(searchTerm.toLowerCase()) ||
+        description.includes(searchTerm.toLowerCase());
 
-    return matchesSearch && matchesPriority;
-  });
+      const matchesPriority =
+        priorityFilter === "all" ||
+        task?.priority?.toLowerCase() === priorityFilter;
 
+      return matchesSearch && matchesPriority;
+    });
+  }, [completedTasks, searchTerm, priorityFilter]);
+
+  // =============================
+  // LOADING STATE
+  // =============================
   if (loading) {
     return (
       <div className="task">
@@ -56,10 +85,26 @@ const CompletedTask = () => {
     );
   }
 
+  // =============================
+  // ERROR STATE
+  // =============================
+  if (error) {
+    return (
+      <div className="task">
+        <div className="task-container">
+          <p className="task-error">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // =============================
+  // UI
+  // =============================
   return (
     <div className="task">
       <div className="task-container">
-        {/* Header Section */}
+        {/* Header */}
         <div className="task-header-section">
           <h2 className="task-header">Completed Tasks</h2>
           <span className="task-count">
@@ -76,6 +121,7 @@ const CompletedTask = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+
           <select
             className="task-select"
             value={priorityFilter}
@@ -96,25 +142,28 @@ const CompletedTask = () => {
               : "No completed tasks match your filters."}
           </p>
         ) : (
-          /* Grid - show as completed */
           <div className="items-grid">
             {filteredTasks.map((item) => (
-              <div key={item._id || item.id} className="item completed">
+              <div key={item._id} className="item completed">
                 <div className="task-header-content">
                   <div>
                     <h3 className="task-title completed">{item.taskName}</h3>
-                    <p className="task-subtitle">{item.taskDescription}</p>
+                    {item.taskDescription && (
+                      <p className="task-subtitle">{item.taskDescription}</p>
+                    )}
                   </div>
+
                   <span
-                    className={`priority-badge priority-${item.priority.toLowerCase()}`}
+                    className={`priority-badge priority-${item.priority?.toLowerCase()}`}
                   >
                     {item.priority}
                   </span>
+
                   <input
                     type="checkbox"
                     className="checkbox"
-                    checked={true}
-                    disabled // can't uncheck completed tasks here
+                    checked
+                    disabled
                   />
                 </div>
 
@@ -122,7 +171,7 @@ const CompletedTask = () => {
                   <span className="task-date">
                     ✅ Completed on:{" "}
                     {new Date(
-                      item.updatedAt || item.dueDate
+                      item.updatedAt || item.completedAt || Date.now()
                     ).toLocaleDateString()}
                   </span>
                 </div>
