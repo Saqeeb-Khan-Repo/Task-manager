@@ -3,7 +3,7 @@ import "./Task.css";
 import { useTasks } from "../../store/Context";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import "dotenv";
 const Task = () => {
   const { tasks, setTasks } = useTasks();
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,7 +16,9 @@ const Task = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/tasks");
+        const response = await axios.get(
+          "https://task-backend-sgnw.onrender.com/tasks"
+        );
         setTasks(response.data);
         setLoading(false);
       } catch (error) {
@@ -43,7 +45,7 @@ const Task = () => {
     setTogglingTasks((prev) => new Set([...prev, taskId]));
     try {
       const response = await axios.put(
-        `http://localhost:3000/tasks/${taskId}/toggle`,
+        `https://task-backend-sgnw.onrender.com/tasks/${taskId}/toggle`,
         { isCompleted: !currentCompleted }
       );
 
@@ -69,7 +71,7 @@ const Task = () => {
   // ✅ FIXED: Delete handler with correct endpoint
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/tasks/${id}`); // ✅ Fixed endpoint
+      await axios.delete(`https://task-backend-sgnw.onrender.com/tasks/${id}`); // ✅ Fixed endpoint
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
       console.log(`Deleted task: ${id}`);
     } catch (error) {

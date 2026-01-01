@@ -15,7 +15,7 @@ const CompletedTask = () => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/tasks/completed"
+          "https://task-backend-sgnw.onrender.com/tasks/completed"
         );
         // Filter only completed tasks
         const completedOnly = response.data.filter(
@@ -55,7 +55,6 @@ const CompletedTask = () => {
       </div>
     );
   }
-  
 
   return (
     <div className="task">
@@ -127,7 +126,6 @@ const CompletedTask = () => {
                     ).toLocaleDateString()}
                   </span>
                 </div>
-               
               </div>
             ))}
           </div>
