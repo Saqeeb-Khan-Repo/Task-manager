@@ -1,97 +1,125 @@
-// Task.jsx - Complete Fixed Version
+// Task.jsx – Optimized & Production Ready
 import "./Task.css";
 import { useTasks } from "../../store/Context";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Task = () => {
   const { tasks, setTasks } = useTasks();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+
   const [togglingTasks, setTogglingTasks] = useState(new Set());
   const [showCompleted, setShowCompleted] = useState(false);
+  const [showDeleted, setShowDeleted] = useState(false);
 
-  // Fetch tasks on mount
+  /* =============================
+     FETCH TASKS
+  ============================== */
   useEffect(() => {
+    let isMounted = true;
+
     const fetchTasks = async () => {
       try {
-        const response = await axios.get(
-          "https://task-backend-sgnw.onrender.com/tasks"
-        );
-        setTasks(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-        setLoading(false);
+        const { data } = await axios.get(`${API_URL}/tasks`);
+        if (isMounted) setTasks(data);
+      } catch (err) {
+        console.error("Failed to fetch tasks:", err);
+      } finally {
+        if (isMounted) setLoading(false);
       }
     };
+
     fetchTasks();
+    return () => {
+      isMounted = false;
+    };
   }, [setTasks]);
 
-  // Auto-hide "Task Completed" popup
+  /* =============================
+     AUTO-HIDE POPUPS
+  ============================== */
   useEffect(() => {
-    if (!showCompleted) return;
+    if (!showCompleted && !showDeleted) return;
 
-    const timeoutId = setTimeout(() => {
+    const timer = setTimeout(() => {
       setShowCompleted(false);
+      setShowDeleted(false);
     }, 2000);
 
-    return () => clearTimeout(timeoutId);
-  }, [showCompleted]);
+    return () => clearTimeout(timer);
+  }, [showCompleted, showDeleted]);
 
-  // Toggle completion
-  const toggleTask = async (taskId, currentCompleted) => {
-    setTogglingTasks((prev) => new Set([...prev, taskId]));
+  /* =============================
+     TOGGLE TASK COMPLETION
+  ============================== */
+  const toggleTask = async (id, isCompleted) => {
+    setTogglingTasks((prev) => new Set(prev).add(id));
+
     try {
-      const response = await axios.put(
-        `https://task-backend-sgnw.onrender.com/tasks/${taskId}/toggle`,
-        { isCompleted: !currentCompleted }
-      );
+      const { data } = await axios.put(`${API_URL}/tasks/${id}/toggle`, {
+        isCompleted: !isCompleted,
+      });
 
-      setTasks((prevTasks) =>
-        prevTasks.map((task) => (task._id === taskId ? response.data : task))
-      );
+      setTasks((prev) => prev.map((task) => (task._id === id ? data : task)));
 
-      // Show popup only when marking as completed
-      if (!currentCompleted) {
-        setShowCompleted(true);
-      }
-    } catch (error) {
-      console.error("Failed to update task:", error);
+      if (!isCompleted) setShowCompleted(true);
+    } catch (err) {
+      console.error("Failed to toggle task:", err);
     } finally {
       setTogglingTasks((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(taskId);
-        return newSet;
+        const updated = new Set(prev);
+        updated.delete(id);
+        return updated;
       });
     }
   };
 
-  // ✅ FIXED: Delete handler with correct endpoint
+  /* =============================
+     DELETE TASK
+  ============================== */
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://task-backend-sgnw.onrender.com/tasks/${id}`); // ✅ Fixed endpoint
-      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
-      console.log(`Deleted task: ${id}`);
-    } catch (error) {
-      console.error("Delete failed:", error);
+      await axios.delete(`${API_URL}/tasks/${id}`);
+      setTasks((prev) => prev.filter((task) => task._id !== id));
+      setShowDeleted(true);
+    } catch (err) {
+      console.error("Delete failed:", err);
     }
   };
 
-  // Pending + filtered tasks (only shows pending due to filter)
-  const pendingTasks = tasks.filter((task) => !task.isCompleted);
-  const filteredTasks = pendingTasks.filter((task) => {
-    const matchesSearch =
-      task.taskName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.taskDescription?.toLowerCase().includes(searchTerm.toLowerCase());
+  /* =============================
+     FILTER TASKS (MEMOIZED)
+  ============================== */
+  const pendingTasks = useMemo(
+    () => tasks.filter((task) => !task?.isCompleted),
+    [tasks]
+  );
 
-    const matchesPriority =
-      priorityFilter === "all" ||
-      task.priority.toLowerCase() === priorityFilter.toLowerCase();
+  const filteredTasks = useMemo(() => {
+    return pendingTasks.filter((task) => {
+      const title = task?.taskName?.toLowerCase() || "";
+      const desc = task?.taskDescription?.toLowerCase() || "";
 
-    return matchesSearch && matchesPriority;
-  });
+      const matchesSearch =
+        title.includes(searchTerm.toLowerCase()) ||
+        desc.includes(searchTerm.toLowerCase());
 
+      const matchesPriority =
+        priorityFilter === "all" ||
+        task?.priority?.toLowerCase() === priorityFilter;
+
+      return matchesSearch && matchesPriority;
+    });
+  }, [pendingTasks, searchTerm, priorityFilter]);
+
+  /* =============================
+     LOADING STATE
+  ============================== */
   if (loading) {
     return (
       <div className="task">
@@ -102,10 +130,14 @@ const Task = () => {
     );
   }
 
+  /* =============================
+     UI
+  ============================== */
   return (
     <>
-      {/* Success popup */}
-      {showCompleted && <div className="popup">Task Completed ✅</div>}
+      {/* Popups */}
+      {showCompleted && <div className="popUp">Task completed ✅</div>}
+      {showDeleted && <div className="popUp">Task deleted 🗑️</div>}
 
       <div className="task">
         <div className="task-container">
@@ -113,7 +145,7 @@ const Task = () => {
           <div className="task-header-section">
             <h2 className="task-header">Your Tasks</h2>
             <span className="task-count">
-              {filteredTasks.length} of {pendingTasks.length} pending tasks
+              {filteredTasks.length} of {pendingTasks.length} pending
             </span>
           </div>
 
@@ -126,6 +158,7 @@ const Task = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+
             <select
               className="task-select"
               value={priorityFilter}
@@ -138,52 +171,54 @@ const Task = () => {
             </select>
           </div>
 
-          {/* Empty state or list */}
+          {/* Empty / List */}
           {filteredTasks.length === 0 ? (
             <p className="task-empty">
               {pendingTasks.length === 0
-                ? "No pending tasks! 🎉 Check completed tasks."
-                : "No pending tasks match your filters."}
+                ? "No pending tasks 🎉"
+                : "No tasks match your filters"}
             </p>
           ) : (
             <div className="items-grid">
               {filteredTasks.map((item) => {
-                const id = item._id || item.id;
+                const id = item._id;
                 const isSaving = togglingTasks.has(id);
 
                 return (
                   <div key={id} className="item">
                     <div className="task-header-content">
-                      <div className="task-info">
+                      <div>
                         <h3 className="task-title">{item.taskName}</h3>
-                        <p className="task-subtitle">{item.taskDescription}</p>
+                        {item.taskDescription && (
+                          <p className="task-subtitle">
+                            {item.taskDescription}
+                          </p>
+                        )}
                       </div>
 
-                      <div className="task-actions">
-                        <span
-                          className={`priority-badge priority-${item.priority.toLowerCase()}`}
-                        >
-                          {item.priority}
-                        </span>
-                      </div>
+                      <span
+                        className={`priority-badge priority-${item.priority.toLowerCase()}`}
+                      >
+                        {item.priority}
+                      </span>
                     </div>
 
                     <div className="task-footer">
                       <span className="task-date">
                         📅 Due: {new Date(item.dueDate).toLocaleDateString()}
                       </span>
+
                       <div className="task-actions-footer">
                         <button
                           className={`complete-btn ${
                             isSaving ? "loading" : ""
                           }`}
-                          onClick={() =>
-                            toggleTask(id, item.isCompleted || false)
-                          }
                           disabled={isSaving}
+                          onClick={() => toggleTask(id, item.isCompleted)}
                         >
-                          {isSaving ? "⏳ Saving..." : "Complete"}
+                          {isSaving ? "Saving…" : "Complete"}
                         </button>
+
                         <button
                           className="delete"
                           onClick={() => handleDelete(id)}
