@@ -3,12 +3,13 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { TaskProvider } from "./store/Context.jsx";
+import { Analytics } from "@vercel/analytics/next";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <TaskProvider>
-      
-        <App />
+      <App />
+      <Analytics />
     </TaskProvider>
   </StrictMode>
 );

@@ -4,7 +4,6 @@ import { Route, Routes, HashRouter as Router } from "react-router-dom";
 import Home from "./components/pages/Home";
 import { lazy, Suspense } from "react";
 import { Loading } from "./Loading";
-import { Analytics } from "@vercel/analytics/next";
 
 const App = () => {
   const Login = lazy(() => import("./components/pages/Login"));
@@ -38,7 +37,7 @@ const App = () => {
               />
             </Routes>
           </Suspense>
-          <Analytics />
+         
         </Router>
       </div>
     </>
