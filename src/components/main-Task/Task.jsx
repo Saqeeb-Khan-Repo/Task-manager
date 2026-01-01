@@ -3,6 +3,7 @@ import "./Task.css";
 import { useTasks } from "../../store/Context";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 const Task = () => {
   const { tasks, setTasks } = useTasks();
   const [searchTerm, setSearchTerm] = useState("");
@@ -73,6 +74,14 @@ const Task = () => {
       await axios.delete(`https://task-backend-sgnw.onrender.com/tasks/${id}`); // ✅ Fixed endpoint
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
       console.log(`Deleted task: ${id}`);
+      Swal.fire(
+        {
+          title: "Task Deleted",
+          text: "your task has been Deleted successfully",
+          icon: "danger",
+        },
+        1000
+      );
     } catch (error) {
       console.error("Delete failed:", error);
     }

@@ -25,6 +25,16 @@ const App = () => {
               <Route path="/CompletedTask" element={<CompletedTask />} />
               <Route path="/login" element={<Login />} />
               <Route path="/SignUp" element={<SignUp />} />
+
+              {/* 404 route */}
+              <Route
+                path="*"
+                element={
+                  <div className="error-page">
+                    <h2>404 - Page Not Found</h2>
+                  </div>
+                }
+              />
             </Routes>
           </Suspense>
         </Router>
