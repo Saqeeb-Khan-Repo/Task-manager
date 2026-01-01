@@ -3,7 +3,7 @@ import "./CreateTask.css";
 import { useState } from "react";
 import { useTasks } from "../../store/Context";
 import axios from "axios";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 
 const CreateTask = () => {
   const { addTask } = useTasks(); // keep for local state sync
@@ -36,13 +36,16 @@ const CreateTask = () => {
     try {
       // Send to backend API
       // In CreateTask.jsx handleSubmit
-      const response = await axios.post("http://localhost:3000/create", {
-        taskName: taskName.trim(),
-        taskDescription: taskDescription.trim(),
-        dueDate,
-        priority: priority.toLowerCase(),
-        isCompleted: false, // ✅
-      });
+      const response = await axios.post(
+        "https://task-backend-sgnw.onrender.com/create",
+        {
+          taskName: taskName.trim(),
+          taskDescription: taskDescription.trim(),
+          dueDate,
+          priority: priority.toLowerCase(),
+          isCompleted: false, // ✅
+        }
+      );
 
       // Add returned task to local state (sync with backend)
       addTask(response.data);
