@@ -3,7 +3,6 @@ import "./Task.css";
 import { useTasks } from "../../store/Context";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "dotenv";
 const Task = () => {
   const { tasks, setTasks } = useTasks();
   const [searchTerm, setSearchTerm] = useState("");
