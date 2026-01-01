@@ -12,7 +12,7 @@ const SideBar = () => {
             <Link to="/createtask">Create Tasks</Link>
           </li>
           <li>
-            <Link to="/completed-task">Completed Task</Link>
+            <Link to="/CompletedTask">Completed Task</Link>
           </li>
         </ul>
       </nav>
@@ -21,5 +21,3 @@ const SideBar = () => {
 };
 
 export default SideBar;
-
-
