@@ -4,10 +4,11 @@ import { Route, Routes, HashRouter as Router } from "react-router-dom";
 import Home from "./components/pages/Home";
 import { lazy, Suspense } from "react";
 import { Loading } from "./Loading";
+import Layout from "./components/pages/Layout";
 
 const App = () => {
   const Login = lazy(() => import("./components/pages/Login"));
-  const SignUp = lazy(() => import("./components/pages/SignUp"));
+  const SignUpCom = lazy(() => import("./components/pages/SignUpCom"));
   const Task = lazy(() => import("./components/main-Task/Task"));
   const CreateTask = lazy(() => import("./components/CreateTask/CreateTask"));
   const CompletedTask = lazy(() => import("./components/Completed-task"));
@@ -19,12 +20,33 @@ const App = () => {
           <SideBar />
           <Suspense fallback={<Loading />}>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route
+                path="/"
+                element={
+                  <Home>
+                    <Layout />
+                  </Home>
+                }
+              />
               <Route path="/task" element={<Task />} />
               <Route path="/createtask" element={<CreateTask />} />
               <Route path="/CompletedTask" element={<CompletedTask />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/SignUp" element={<SignUp />} />
+              <Route
+                path="/login"
+                element={
+                  <Layout>
+                    <Login />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/SignUp"
+                element={
+                  <Layout>
+                    <SignUpCom />
+                  </Layout>
+                }
+              />
 
               {/* 404 route */}
               <Route
@@ -37,7 +59,6 @@ const App = () => {
               />
             </Routes>
           </Suspense>
-         
         </Router>
       </div>
     </>

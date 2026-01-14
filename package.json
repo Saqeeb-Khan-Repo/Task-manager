@@ -1,7 +1,7 @@
 {
   "name": "task",
   "homepage": "https://Saqeeb-Khan-Repo.github.io/Task-manager/",
-  "private": true,
+  "private": false,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -13,16 +13,21 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.59.3",
+    "@clerk/themes": "^2.4.47",
+    "@tailwindcss/vite": "^4.1.18",
     "@vercel/analytics": "^1.6.1",
+    "antd": "^6.1.4",
     "axios": "^1.13.2",
     "gh-pages": "^6.3.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
     "react-loader-spinner": "^8.0.0",
-    "react-router-dom": "^7.11.0",
+    "react-router-dom": "^6.30.3",
     "react-spinners": "^0.17.0",
-    "sweetalert2": "^11.26.17"
+    "sweetalert2": "^11.26.17",
+    "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -71,7 +71,7 @@ const CreateTask = () => {
     <>
       {showAlert && <div className="popUp">Task Added successfully</div>}
       <div className="create-task-container">
-        <h2>Create New Task</h2>
+        <h2 className="font-bold text-3xl text-center ">Create New Task</h2>
 
         {error && <p className="form-error">{error}</p>}
 

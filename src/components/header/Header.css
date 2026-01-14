@@ -1,7 +1,7 @@
-/* .main {
+
+.main {
   background: rgb(125, 6, 245);
   text-align: center;
-  padding: 1px;
   width: 100%;
   margin-left: auto;
   box-shadow: 20px 1px 20px 3px rgb(55, 2, 245);
@@ -20,4 +20,4 @@
 .head a {
   text-decoration: none;
   color: white;
-} */
+}

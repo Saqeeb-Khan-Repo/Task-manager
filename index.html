@@ -8,80 +8,115 @@
     <title>TaskFlow - Modern Task Manager & To-Do List App</title>
     <meta
       name="description"
-      content="TaskFlow is a modern task management app to organize your work, set priorities, track due dates, and boost productivity. Create tasks, filter by priority, and search instantly."
+      content="TaskFlow is a modern task management app to organize your work, set priorities, track due dates, and boost productivity."
     />
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta
-      property="og:title"
-      content="TaskFlow - Modern Task Manager & To-Do List App"
-    />
+    <meta property="og:title" content="TaskFlow - Modern Task Manager" />
     <meta
       property="og:description"
-      content="Organize tasks, set priorities, track due dates. Modern task management app for better productivity."
+      content="Organize tasks, set priorities, and track deadlines with TaskFlow."
     />
     <meta property="og:url" content="https://your-taskflow-app.com" />
     <meta property="og:image" content="/og-image-taskflow.jpg" />
 
-    <!-- Twitter Card -->
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="TaskFlow - Modern Task Manager & To-Do List App"
-    />
+    <meta name="twitter:title" content="TaskFlow - Modern Task Manager" />
     <meta
       name="twitter:description"
-      content="Modern task manager with priority filters, search, and due dates."
+      content="Modern task manager with priority filters and due dates."
     />
     <meta name="twitter:image" content="/twitter-image-taskflow.jpg" />
 
     <!-- Keywords -->
     <meta
       name="keywords"
-      content="task manager, to-do list, productivity app, task organizer, priority tasks, due dates, taskflow"
+      content="task manager, to-do list, productivity app, task organizer"
     />
 
-    <!-- Structured Data (JSON-LD) -->
+    <!-- Structured Data -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "TaskFlow",
-        "description": "Modern task management application to organize work, set priorities, and track due dates.",
-        "url": "https://your-taskflow-app.com",
         "applicationCategory": "ProductivityApplication",
         "operatingSystem": "Web",
         "offers": {
           "@type": "Offer",
           "price": "0",
           "priceCurrency": "USD"
-        },
-        "featureList": [
-          "Priority-based task organization",
-          "Real-time search and filtering",
-          "Due date tracking",
-          "Responsive design"
-        ]
+        }
       }
     </script>
 
     <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="./task.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" />
 
-    <!-- Preconnect for performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+    default-src 'self';
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://your-taskflow-app.com" />
+    base-uri 'self';
+    object-src 'none';
 
-    <!-- Robots -->
-    <meta name="robots" content="index, follow" />
+    script-src
+      'self'
+      'unsafe-inline'
+      'unsafe-eval'
+      https://*.clerk.dev
+      https://*.clerk.com
+      https://*.clerk.accounts.dev;
+
+    script-src-elem
+      'self'
+      https://*.clerk.dev
+      https://*.clerk.com
+      https://*.clerk.accounts.dev;
+
+    style-src
+      'self'
+      'unsafe-inline'
+      https://*.clerk.dev
+      https://*.clerk.com
+      https://cdn.tailwindcss.com
+      https://cdn.jsdelivr.net;
+
+    font-src
+      'self'
+      https://cdn.jsdelivr.net
+      data:;
+
+    img-src
+      'self'
+      data:
+      blob:
+      https://*.clerk.dev
+      https://*.clerk.com
+      https://*.clerk.accounts.dev;
+
+    connect-src
+      'self'
+      https://*.clerk.dev
+      https://*.clerk.com
+      https://*.clerk.accounts.dev;
+
+    frame-src
+      https://*.clerk.dev
+      https://*.clerk.com
+      https://*.clerk.accounts.dev;
+
+    worker-src
+      'self'
+      blob:;
+  "
+    />
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
