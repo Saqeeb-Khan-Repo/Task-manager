@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <div className="Header bg-indigo-500 text-center  h-full py-8">
+    <div className="Header bg-blue-600 text-center  h-full py-8">
       <h1 className="head font-bold text-cyan-50 py-3 text-5xl">
         <Link to="/">TASK FLOW</Link>
       </h1>

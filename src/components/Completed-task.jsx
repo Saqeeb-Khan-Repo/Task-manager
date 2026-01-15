@@ -61,7 +61,7 @@ const CompletedTask = () => {
       <div className="task-container">
         {/* Header Section */}
         <div className="task-header-section">
-          <h2 className="task-header">Completed Tasks</h2>
+          <h2 className="task-header text-center">Completed Tasks✅</h2>
           <span className="task-count">
             {filteredTasks.length} of {completedTasks.length} completed
           </span>
@@ -102,7 +102,7 @@ const CompletedTask = () => {
               <div key={item._id || item.id} className="item completed">
                 <div className="task-header-content">
                   <div>
-                    <h3 className="task-title completed">{item.taskName}</h3>
+                    <h3 className="task-title completed ">{item.taskName}</h3>
                     <p className="task-subtitle">{item.taskDescription}</p>
                   </div>
                   <span
